@@ -5,6 +5,7 @@ FROM python:${PYTHON_VERSION} as builder
 # Set the working directory
 WORKDIR /app
 COPY . .
+RUN chmod +x entrypoint.sh
 
 # Stage 2: Run Stage
 FROM python:${PYTHON_VERSION} as run
@@ -21,4 +22,4 @@ RUN pip install --upgrade pip && \
 EXPOSE 8080
 
 # Run database migrations and start the Django application
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["sh", "./entrypoint.sh"]

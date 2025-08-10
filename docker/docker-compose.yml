@@ -6,12 +6,12 @@ services:
   pythonapp:
     image: todoapp:2.0.0
     build:
-      context: .
+      context: ./todoapp
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
     env_file:
-      - app.env
+      - ./todoapp/app.env
     environment:
       PYTHONUNBUFFERED: "1"
     networks:
@@ -23,7 +23,7 @@ services:
   mysql:
     image: mysql-local:1.0.0
     build:
-      context: .
+      context: ./mysql
       dockerfile: Dockerfile.mysql
     container_name: my-sql
     ports:
@@ -31,7 +31,7 @@ services:
     volumes:
       - todoapp-db-data:/var/lib/mysql
     env_file:
-      - mysql.env
+      - ./mysql/mysql.env
     healthcheck:
       test: ["CMD-SHELL", "mysqladmin ping -h localhost -p$MYSQL_ROOT_PASSWORD --silent"]
       interval: 5s
