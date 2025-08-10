@@ -61,13 +61,13 @@ WSGI_APPLICATION = "todolist.wsgi.application"
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 # default if no env in code
 DATABASES = {
-    'default': {
-        'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.mysql'),
-        'NAME': os.environ.get('DB_NAME', 'app_db'),
-        'USER': os.environ.get('DB_USER', 'app_user'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'devpassword123'),
-        'HOST': os.environ.get('DB_HOST', 'localhost'),
-        'PORT': os.environ.get('DB_PORT', '3306'),
+    "default": {
+        "ENGINE": os.environ.get("DB_ENGINE", "django.db.backends.mysql"),
+        "NAME": os.environ.get("DB_NAME", "app_db"),
+        "USER": os.environ.get("DB_USER", "app_user"),
+        "PASSWORD": os.environ.get("DB_PASSWORD", "devpassword123"),
+        "HOST": os.environ.get("DB_HOST", "localhost"),
+        "PORT": os.environ.get("DB_PORT", "3306"),
     }
 }
 

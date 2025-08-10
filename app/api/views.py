@@ -1,8 +1,7 @@
-from django.contrib.auth.models import User
-from rest_framework import permissions, viewsets
-
 from api.serializers import TodoListSerializer, TodoSerializer, UserSerializer
+from django.contrib.auth.models import User
 from lists.models import Todo, TodoList
+from rest_framework import permissions, viewsets
 
 
 class IsCreatorOrReadOnly(permissions.BasePermission):

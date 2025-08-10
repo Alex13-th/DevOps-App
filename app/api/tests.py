@@ -1,9 +1,8 @@
 from django.contrib.auth.models import User
 from django.urls import reverse
+from lists.models import TodoList
 from rest_framework import status
 from rest_framework.test import APITestCase
-
-from lists.models import TodoList
 
 
 class UserTests(APITestCase):
