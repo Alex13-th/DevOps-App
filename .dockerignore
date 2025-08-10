@@ -1,0 +1,38 @@
+# === Python ===
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pycache
+*.sqlite3
+
+# Віртуальні середовища
+env/
+venv/
+.venv/
+
+# === Django secrets ===
+*.env
+.env.*
+!app.env
+!mysql.env
+
+# === DevOps інфраструктура ===
+k8s/
+helm/
+terraform/
+ansible/
+docs/
+
+# === IDE та інше сміття ===
+.vscode/
+.idea/
+*.log
+
+# === Git ===
+.git/
+.gitignore
+
+# === OS системні файли ===
+.DS_Store
+Thumbs.db
