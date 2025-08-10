@@ -1,0 +1,35 @@
+# Віртуальне середовище
+venv/
+.venv/
+env/
+ENV/
+
+# Кеші Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Логи
+*.log
+
+# Конфіги середовищ
+.env
+*.env
+
+# IDE
+.vscode/
+.idea/
+
+# Тести / покриття
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Docker
+*.pid
+*.seed
+*.pid.lock
+
+# Системні файли
+.DS_Store
+Thumbs.db

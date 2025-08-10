@@ -57,13 +57,12 @@ ROOT_URLCONF = "todolist.urls"
 
 WSGI_APPLICATION = "todolist.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
-# default if no env in code 
+# default if no env in code
 DATABASES = {
     'default': {
-        'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.mysql'), 
+        'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.mysql'),
         'NAME': os.environ.get('DB_NAME', 'app_db'),
         'USER': os.environ.get('DB_USER', 'app_user'),
         'PASSWORD': os.environ.get('DB_PASSWORD', 'devpassword123'),
@@ -71,7 +70,6 @@ DATABASES = {
         'PORT': os.environ.get('DB_PORT', '3306'),
     }
 }
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
