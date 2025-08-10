@@ -1,24 +1,21 @@
-# docker-compose.yml
-networks:
-  todoapp-net:
 services:
   pythonapp:
     image: todoapp:2.0.0
     build:
-      context: ./todoapp
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: docker/todoapp/Dockerfile
     ports:
       - "8080:8080"
     env_file:
       - ./todoapp/app.env
-    environment:
-      PYTHONUNBUFFERED: "1"
-    networks:
-      - todoapp-net
+    volumes:
+      - ../app:/app
     depends_on:
       mysql:
         condition: service_healthy
-    restart: unless-stopped
+    networks:
+      - todoapp-net
+
   mysql:
     image: mysql-local:1.0.0
     build:
@@ -26,13 +23,13 @@ services:
       dockerfile: Dockerfile.mysql
     container_name: my-sql
     ports:
-      - "3306:3306" # should exist only for local development
+      - "3306:3306"
     volumes:
       - todoapp-db-data:/var/lib/mysql
     env_file:
       - ./mysql/mysql.env
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -p$$MYSQL_ROOT_PASSWORD --silent"] #$$ Проблема була в ранній інтерполяції Compose.
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -p$$MYSQL_ROOT_PASSWORD --silent"]
       interval: 5s
       timeout: 3s
       retries: 10
@@ -40,5 +37,9 @@ services:
     networks:
       - todoapp-net
     restart: unless-stopped
+
 volumes:
   todoapp-db-data:
+
+networks:
+  todoapp-net:
