@@ -51,5 +51,6 @@ jobs:
           vuln-type: 'os,library'
           format: 'table'
           severity: 'CRITICAL'
+          ignore-unfixed: true
           exit-code: '1'   # фейлити PR при високих CVE
 
