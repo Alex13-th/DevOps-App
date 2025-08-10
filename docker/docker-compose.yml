@@ -1,5 +1,4 @@
 # docker-compose.yml
-version: '3'
 networks:
   todoapp-net:
 services:
@@ -33,7 +32,7 @@ services:
     env_file:
       - ./mysql/mysql.env
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -p$MYSQL_ROOT_PASSWORD --silent"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -p$$MYSQL_ROOT_PASSWORD --silent"] #$$ Проблема була в ранній інтерполяції Compose.
       interval: 5s
       timeout: 3s
       retries: 10
