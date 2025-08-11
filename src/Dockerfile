@@ -2,23 +2,30 @@
 ARG PYTHON_VERSION=3.11-slim
 FROM python:${PYTHON_VERSION} AS builder
 
-WORKDIR /opt/build
+WORKDIR /app
 
-# deps для збірки mysqlclient
+# системні залежності для збірки mysqlclient
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    pkg-config default-libmysqlclient-dev build-essential \
+    gcc build-essential pkg-config default-libmysqlclient-dev \
  && rm -rf /var/lib/apt/lists/*
 
-# інсталюємо залежності у вигляді wheel
-COPY docker/todoapp/requirements.txt .
+# спочатку тільки requirements.txt, щоб кешувати
+COPY requirements.txt .
 RUN pip install --upgrade pip && \
     pip wheel --no-cache-dir --wheel-dir /wheels -r requirements.txt
 
+# потім код (не критично, але зручно мати на стадії build)
+COPY . .
 
 # ---------- Stage 2: runtime ----------
 FROM python:${PYTHON_VERSION} AS run
 
-# лише runtime-бібліотека для mysqlclient
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# легкі рантайм-ліби для mysqlclient
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libmariadb3 \
  && rm -rf /var/lib/apt/lists/*
@@ -27,13 +34,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=builder /wheels /wheels
 RUN pip install --no-cache-dir /wheels/* && rm -rf /wheels
 
-# entrypoint кладемо поза /app, щоб volume його не перекривав
-COPY docker/todoapp/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+# код + entrypoint
+COPY . .
+RUN chmod +x /app/entrypoint.sh
 
-# робоча директорія для коду (буде змонтована з хоста)
-WORKDIR /app
 EXPOSE 8080
-
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/app/entrypoint.sh"]
 

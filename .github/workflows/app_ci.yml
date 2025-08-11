@@ -1,7 +1,6 @@
 name: App CI/CD
 
 on:
-
   push:
     branches: [ "develop" ]
   pull_request:
@@ -13,6 +12,10 @@ jobs:
       contents: read
       packages: write
 
+    defaults:
+      run:
+        working-directory: src   # ← працюємо в src
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -20,31 +23,49 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11' 
-      
-      - name: Install dev tools 
+          python-version: '3.11'
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('src/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dev tools
         run: |
           python -m pip install --upgrade pip
-          pip install -r ./docker/todoapp/requirements.txt
-          pip install flake8 black isort pytest
+          pip install -r requirements.txt
+          pip install flake8 black isort pytest pytest-django
 
       - name: Lint
         run: |
           flake8 .
           black --check .
           isort --check-only .
-      
+
+      - name: Run tests (SQLite)
+        env:
+          DJANGO_SETTINGS_MODULE: todolist.settings
+          SECRET_KEY: dummy-ci-key
+          DEBUG: "1"
+          ENGINE: django.db.backends.sqlite3
+          PYTHONPATH: ${{ github.workspace }}/src
+        run: |
+          pytest -q
+
       - name: Compute image name
         id: metaname
         run: |
           echo "image_name=$(echo ghcr.io/${{ github.repository }}:sha-${{ github.sha }} | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
-          
+
       - name: Set up Buildx
         uses: docker/setup-buildx-action@v3
-      
+
       - name: Build image
         run: |
-          docker build -t "${{ steps.metaname.outputs.image_name }}" -f docker/todoapp/Dockerfile .
+          docker build -t "${{ steps.metaname.outputs.image_name }}" -f Dockerfile .
 
       - name: Trivy scan
         uses: aquasecurity/trivy-action@0.18.0
@@ -55,5 +76,4 @@ jobs:
           format: 'table'
           severity: 'CRITICAL'
           ignore-unfixed: true
-          exit-code: '1'   # фейлити PR при високих CVE
-
+          exit-code: '1'

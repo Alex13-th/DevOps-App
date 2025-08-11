@@ -13,17 +13,26 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+# --- Static files ---
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+
+# WhiteNoise (залишаємо Manifest, але не валимося на відсутніх файлах)
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "@e2(yx)v&tgh3_s=0yja-i!dpebxsz^dg47x)-k&kq_3zf*9e*"
+SECRET_KEY = os.environ.get("SECRET_KEY", "TEST_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
@@ -45,6 +54,7 @@ INSTALLED_APPS = (
 
 MIDDLEWARE = (
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -53,21 +63,30 @@ MIDDLEWARE = (
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 )
 
+
+
 ROOT_URLCONF = "todolist.urls"
 
 WSGI_APPLICATION = "todolist.wsgi.application"
 
+
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
-# default if no env in code
+
+ENGINE = os.environ.get("ENGINE", "django.db.backends.sqlite3")
+DB_NAME = os.environ.get("DB_NAME", os.path.join(BASE_DIR, "db.sqlite3"))
+DB_USER = os.environ.get("DB_USER", "")
+DB_PASSWORD = os.environ.get("DB_PASSWORD", "")
+DB_HOST = os.environ.get("DB_HOST", "")
+
 DATABASES = {
-    "default": {
-        "ENGINE": os.environ.get("DB_ENGINE", "django.db.backends.mysql"),
-        "NAME": os.environ.get("DB_NAME", "app_db"),
-        "USER": os.environ.get("DB_USER", "app_user"),
-        "PASSWORD": os.environ.get("DB_PASSWORD", "devpassword123"),
-        "HOST": os.environ.get("DB_HOST", "localhost"),
-        "PORT": os.environ.get("DB_PORT", "3306"),
+    'default': {
+        'ENGINE': ENGINE,
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSWORD,
+        'HOST': DB_HOST,  # You can use a different host if your MySQL server is on a remote machine.
+        'PORT': '',  # Leave this empty to use the default MySQL port (3306).
     }
 }
 
