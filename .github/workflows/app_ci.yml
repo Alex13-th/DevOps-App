@@ -89,4 +89,6 @@ jobs:
           severity: 'CRITICAL'
           ignore-unfixed: true
           exit-code: '1'
+          github-pat: ${{ secrets.GITHUB_TOKEN }}
+
       
