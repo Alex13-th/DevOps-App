@@ -44,16 +44,10 @@ jobs:
           flake8 .
           black --check .
           isort --check-only .
-
-      - name: Run tests (SQLite)
-        env:
-          DJANGO_SETTINGS_MODULE: todolist.settings
-          SECRET_KEY: dummy-ci-key
-          DEBUG: "1"
-          ENGINE: django.db.backends.sqlite3
-          PYTHONPATH: ${{ github.workspace }}/src
+      
+      - name: Run tests
         run: |
-          pytest -q
+          python manage.py test
 
       - name: Compute image name
         id: metaname
