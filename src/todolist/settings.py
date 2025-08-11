@@ -22,7 +22,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
@@ -64,7 +63,6 @@ MIDDLEWARE = (
 )
 
 
-
 ROOT_URLCONF = "todolist.urls"
 
 WSGI_APPLICATION = "todolist.wsgi.application"
@@ -80,13 +78,13 @@ DB_PASSWORD = os.environ.get("DB_PASSWORD", "")
 DB_HOST = os.environ.get("DB_HOST", "")
 
 DATABASES = {
-    'default': {
-        'ENGINE': ENGINE,
-        'NAME': DB_NAME,
-        'USER': DB_USER,
-        'PASSWORD': DB_PASSWORD,
-        'HOST': DB_HOST,  # You can use a different host if your MySQL server is on a remote machine.
-        'PORT': '',  # Leave this empty to use the default MySQL port (3306).
+    "default": {
+        "ENGINE": ENGINE,
+        "NAME": DB_NAME,
+        "USER": DB_USER,
+        "PASSWORD": DB_PASSWORD,
+        "HOST": DB_HOST,
+        "PORT": "",
     }
 }
 
