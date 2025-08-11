@@ -12,6 +12,8 @@ services:
         condition: service_healthy
     ports:
       - "8080:8080"
+    networks:
+      - todoapp-net 
 
   db:
     image: mysql:8.0
@@ -19,6 +21,8 @@ services:
       - ./mysql.env           # MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD, MYSQL_ROOT_PASSWORD
     ports:
       - "3306:3306"
+    volumes:
+      - todoapp-db-data:/var/lib/mysql
     healthcheck:
       test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$${MYSQL_ROOT_PASSWORD} --silent || exit 1"]
       interval: 10s
