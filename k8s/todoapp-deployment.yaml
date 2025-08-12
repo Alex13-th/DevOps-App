@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todoapp-deployment
+  namespace: todoapp-web-ns
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  replicas: 2
+  selector:
+    matchLabels:
+      app: todoapp-web
+  template:
+    metadata:
+      labels:
+        app: todoapp-web
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: todoapp
+          image: ghcr.io/alex13-th/devops-app:sha-90f2508d84e88f8b28b48da291ef0dd4a200c34c
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "512m"
+            limits:
+              memory: "512Mi"
+              cpu: "768m"
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: todoapp-data-storage
+              mountPath: /app/data
+          envFrom:
+            - secretRef:
+                name: todoapp-secrets
+            - configMapRef:
+                name: todoapp-configs
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 4
+          readinessProbe:
+            httpGet:
+              path: /api/ready
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      imagePullSecrets:
+        - name: ghcr-secret
+      volumes:
+        - name: todoapp-data-storage
+          persistentVolumeClaim:
+            claimName: todoapp-pvc-data
