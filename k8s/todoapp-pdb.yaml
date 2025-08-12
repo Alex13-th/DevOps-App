@@ -1,0 +1,10 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: todoapp-pdb
+  namespace: todoapp-web-ns
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: todoapp-web
